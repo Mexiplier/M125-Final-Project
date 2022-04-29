@@ -243,7 +243,7 @@ void uiDesign()
     cout << "Jayveer Prajapati               ";
 }
 
-// s Check For Characters.
+// Check For Characters.
 bool isUpperLetter(char upper)
 {
     if (upper >= 'A' && upper <= 'Z')
@@ -273,7 +273,7 @@ bool isSymbol(char symbol)
         return false;
 }
 
-//! Count Characters.
+// Count Characters.
 int countUpperLetter(string password)
 {
     int counter = 0;
