@@ -230,7 +230,7 @@ void uiDesign()
 
     SetConsoleTextAttribute(hConsole, 180);
     gotoxy(76, 21);
-    cout << "Date: 04/27/22                  ";
+    cout << "Date: 04/30/22                  ";
     gotoxy(76, 22);
     cout << "Created By:                     ";
     gotoxy(76, 23);
@@ -320,6 +320,7 @@ void passwordStrength(string password, char userInputChar)
     int max_count = 0;
     int count = 1;
     char cOccurring;
+    string sUpperCase = "0", sLowerCase = "0";
 
     // Scan Password.
     for (int i = 0; i < passwordLength; i++)
@@ -367,19 +368,41 @@ void passwordStrength(string password, char userInputChar)
         gotoxy(22, 12);
         cout << "+" << passwordLength * 4 << "  ";
     }
+    else if (passwordLength == 0)
+    {
+        SetConsoleTextAttribute(hConsole, 6);
+        gotoxy(22, 12);
+        cout << "0   ";
+        gotoxy(56, 12);
+        cout << "0   ";
+    }
     if (iUpperCase > 0)
     {
         SetConsoleTextAttribute(hConsole, 1);
-        iScore += iUpperCase * 4;
+        iScore += ((passwordLength - iUpperCase) * 2);
+        sUpperCase = "+" + to_string((password.length() - iUpperCase) * 2);
         gotoxy(22, 14);
-        cout << "+" << iUpperCase * 4;
+        cout << sUpperCase;
+    }
+    else if (iUpperCase == 0)
+    {
+        SetConsoleTextAttribute(hConsole, 1);
+        gotoxy(22, 14);
+        cout << "0  ";
     }
     if (iLowerCase > 0)
     {
         SetConsoleTextAttribute(hConsole, 2);
-        iScore += iLowerCase * 2;
+        iScore += ((passwordLength - iLowerCase) * 2);
+        sLowerCase = "+" + to_string((password.length() - iLowerCase) * 2);
         gotoxy(22, 16);
-        cout << "+" << iLowerCase * 2 << "  ";
+        cout << sLowerCase;
+    }
+    else if (iLowerCase == 0)
+    {
+        SetConsoleTextAttribute(hConsole, 2);
+        gotoxy(22, 16);
+        cout << "0  ";
     }
     if (iNumber > 0)
     {
@@ -388,12 +411,24 @@ void passwordStrength(string password, char userInputChar)
         gotoxy(22, 18);
         cout << "+" << iNumber * 4 << "  ";
     }
+    else if (iNumber == 0)
+    {
+        SetConsoleTextAttribute(hConsole, 3);
+        gotoxy(22, 18);
+        cout << "0  ";
+    }
     if (iSymbol > 0)
     {
         SetConsoleTextAttribute(hConsole, 5);
         iScore += iSymbol * 6;
         gotoxy(22, 20);
         cout << "+" << iSymbol * 6 << "  ";
+    }
+    else if (iSymbol == 0)
+    {
+        SetConsoleTextAttribute(hConsole, 5);
+        gotoxy(22, 20);
+        cout << "0  ";
     }
     if (passwordLength > 7 && iUpperCase > 0 && iLowerCase > 0 && iNumber > 0 && iSymbol > 0)
     {
@@ -422,17 +457,25 @@ void passwordStrength(string password, char userInputChar)
             count++;
         }
     }
-    gotoxy(56, 12);
-    SetConsoleTextAttribute(hConsole, 6);
-    cout << cOccurring << " ";
-    cout << "+" << max_count << "  " << endl;
     if (max_count > 0)
     {
         iScore -= max_count * 2;
+        SetConsoleTextAttribute(hConsole, 6);
+        gotoxy(56, 12);
+        cout << cOccurring << " ";
+        cout << "+" << max_count << "  " << endl;
+        gotoxy(64, 12);
+        cout << -max_count * 2 << " ";
     }
-    gotoxy(64, 12);
-    cout << -max_count * 2 << " ";
-
+    else if (max_count == 0)
+    {
+        iScore += max_count * 2;
+        SetConsoleTextAttribute(hConsole, 6);
+        gotoxy(56, 12);
+        cout << "0   ";
+        gotoxy(64, 12);
+        cout << "0      ";
+    }
     // Upper Letters Only.
     if (iUpperCase == passwordLength)
     {
@@ -515,7 +558,7 @@ void passwordStrength(string password, char userInputChar)
     {
         iScore = 100;
     }
-    else if (iScore < 0)
+    else if (iScore <= 0)
     {
         iScore = 0;
     }
@@ -606,21 +649,6 @@ void passwordStrength(string password, char userInputChar)
         for (int i = 0; i < 34; i++)
             cout << char(176);
         gotoxy(51, 6);
-        cout << "0  ";
-        gotoxy(64, 12);
-        SetConsoleTextAttribute(hConsole, 6);
-        cout << "0      ";
-        gotoxy(56, 12);
-        cout << "0   ";
-        gotoxy(22, 12);
-        cout << "0  ";
-        gotoxy(22, 14);
-        cout << "0  ";
-        gotoxy(22, 16);
-        cout << "0  ";
-        gotoxy(22, 18);
-        cout << "0  ";
-        gotoxy(22, 20);
         cout << "0  ";
     }
 
