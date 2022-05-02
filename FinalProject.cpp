@@ -134,19 +134,19 @@ void uiDesign()
     cout << "Additions";
 
     // Deductions
-    gotoxy(34, 10);
+    gotoxy(32, 10);
     cout << "Deductions";
 
     // Count:
     gotoxy(14, 10);
     cout << "Count" << endl;
-    gotoxy(56, 10);
+    gotoxy(60, 10);
     cout << "Count" << endl;
 
     // Bonus:
     gotoxy(22, 10);
     cout << "Bonus" << endl;
-    gotoxy(64, 10);
+    gotoxy(68, 10);
     cout << "Bonus" << endl;
 
     // Characters:
@@ -175,29 +175,29 @@ void uiDesign()
     cout << "Symbols: " << endl;
 
     // Maximum Occurring Character:
-    gotoxy(34, 12);
+    gotoxy(32, 12);
     SetConsoleTextAttribute(hConsole, 6);
     cout << "Occurring Character: " << endl;
 
-    // Upper Letters Only:
-    gotoxy(34, 14);
+    // Consecutive Upper Letters:
+    gotoxy(32, 14);
     SetConsoleTextAttribute(hConsole, 1);
-    cout << "Upper Letters Only: " << endl;
+    cout << "Consecutive Upper Letters: " << endl;
 
-    // Lower Letters Only:
-    gotoxy(34, 16);
+    // Consecutive Lower Letters:
+    gotoxy(32, 16);
     SetConsoleTextAttribute(hConsole, 2);
-    cout << "Lower Letters Only: " << endl;
+    cout << "Consecutive Lower Letters: " << endl;
 
-    // Numbers Only:
-    gotoxy(34, 18);
+    // Consecutive Numbers:
+    gotoxy(32, 18);
     SetConsoleTextAttribute(hConsole, 3);
-    cout << "Numbers Only: " << endl;
+    cout << "Consecutive Numbers: " << endl;
 
-    // Symbols Only:
-    gotoxy(34, 20);
+    // Letters Only:
+    gotoxy(32, 20);
     SetConsoleTextAttribute(hConsole, 5);
-    cout << "Symbols Only: " << endl;
+    cout << "Letters Only: " << endl;
 
     // Password Strength:
     gotoxy(86, 1);
@@ -320,7 +320,8 @@ void passwordStrength(string password, char userInputChar)
     int max_count = 0;
     int count = 1;
     char cOccurring;
-    string sUpperCase = "0", sLowerCase = "0";
+    int consecutiveUpper = 0, consecutiveLower = 0, consecutiveNumber = 0;
+    string sLetterOnly = "0", sUpperCase = "0", sLowerCase = "0";
 
     // Scan Password.
     for (int i = 0; i < passwordLength; i++)
@@ -340,6 +341,39 @@ void passwordStrength(string password, char userInputChar)
         if (isSymbol(password[i]))
         {
             iSymbol++;
+        }
+        if ((i + 1) < passwordLength)
+        {
+            if (isUpperLetter(password[i]) && isUpperLetter(password[i + 1]))
+            {
+                consecutiveUpper++;
+            }
+            if (isLowerLetter(password[i]) && isLowerLetter(password[i + 1]))
+            {
+                consecutiveLower++;
+            }
+            if (isNumber(password[i]) && isNumber(password[i + 1]))
+            {
+                consecutiveNumber++;
+            }
+        }
+    }
+    // Scan Password For Occuring Characters.
+    sort(password.begin(), password.end());
+    for (int i = 1; i <= passwordLength; i++)
+    {
+        if ((i == passwordLength) || (password[i] != password[i - 1]))
+        {
+            if (max_count < count)
+            {
+                max_count = count;
+                cOccurring = password[i - 1];
+            }
+            count = 1;
+        }
+        else
+        {
+            count++;
         }
     }
 
@@ -372,8 +406,6 @@ void passwordStrength(string password, char userInputChar)
     {
         SetConsoleTextAttribute(hConsole, 6);
         gotoxy(22, 12);
-        cout << "0   ";
-        gotoxy(56, 12);
         cout << "0   ";
     }
     if (iUpperCase > 0)
@@ -440,116 +472,87 @@ void passwordStrength(string password, char userInputChar)
 
     // Deducting score.
     // Maximum Occurring Character:
-    sort(password.begin(), password.end());
-    for (int i = 1; i <= passwordLength; i++)
-    {
-        if ((i == passwordLength) || (password[i] != password[i - 1]))
-        {
-            if (max_count < count)
-            {
-                max_count = count;
-                cOccurring = password[i - 1];
-            }
-            count = 1;
-        }
-        else
-        {
-            count++;
-        }
-    }
     if (max_count > 0)
     {
         iScore -= max_count * 2;
         SetConsoleTextAttribute(hConsole, 6);
-        gotoxy(56, 12);
+        gotoxy(60, 12);
         cout << cOccurring << " ";
         cout << "+" << max_count << "  " << endl;
-        gotoxy(64, 12);
+        gotoxy(68, 12);
         cout << -max_count * 2 << " ";
     }
     else if (max_count == 0)
     {
         iScore += max_count * 2;
         SetConsoleTextAttribute(hConsole, 6);
-        gotoxy(56, 12);
-        cout << "0   ";
-        gotoxy(64, 12);
+        gotoxy(60, 12);
+        cout << "0      ";
+        gotoxy(68, 12);
         cout << "0      ";
     }
-    // Upper Letters Only.
-    if (iUpperCase == passwordLength)
+    // Consecutive Upper Letters:
+    iScore -= consecutiveUpper * 2;
+    gotoxy(60, 14);
+    SetConsoleTextAttribute(hConsole, 1);
+    cout << consecutiveUpper << "  ";
+    gotoxy(68, 14);
+    cout << -consecutiveUpper * 2 << " ";
+    if (consecutiveUpper == 0)
     {
-        iScore -= iUpperCase * 2;
-        gotoxy(56, 14);
-        SetConsoleTextAttribute(hConsole, 1);
-        cout << passwordLength << "  ";
-        gotoxy(64, 14);
-        cout << -iUpperCase * 2 << " ";
-    }
-    else
-    {
-        iScore += iUpperCase * 2;
-        gotoxy(56, 14);
+        gotoxy(60, 14);
         SetConsoleTextAttribute(hConsole, 1);
         cout << "0";
-        gotoxy(64, 14);
-        cout << "0  ";
+        gotoxy(68, 14);
+        cout << "0";
     }
-    // Lower Letters Only.
-    if (iLowerCase == passwordLength)
+    // Consecutive Lower Letters:
+    iScore -= consecutiveLower * 2;
+    gotoxy(60, 16);
+    SetConsoleTextAttribute(hConsole, 2);
+    cout << consecutiveLower << "  ";
+    gotoxy(68, 16);
+    cout << -consecutiveLower * 2 << " ";
+    if (consecutiveLower == 0)
     {
-        iScore -= iLowerCase * 2;
-        gotoxy(56, 16);
-        SetConsoleTextAttribute(hConsole, 2);
-        cout << passwordLength << "  ";
-        gotoxy(64, 16);
-        cout << -iLowerCase * 2 << " ";
-    }
-    else
-    {
-        iScore += iLowerCase * 2;
-        gotoxy(56, 16);
+        gotoxy(60, 16);
         SetConsoleTextAttribute(hConsole, 2);
         cout << "0";
-        gotoxy(64, 16);
-        cout << "0  ";
+        gotoxy(68, 16);
+        cout << "0";
     }
-    // Numbers Only.
-    if (iNumber == passwordLength)
+    // Consecutive Numbers:
+    iScore -= consecutiveNumber * 2;
+    gotoxy(60, 18);
+    SetConsoleTextAttribute(hConsole, 3);
+    cout << consecutiveNumber << "  ";
+    gotoxy(68, 18);
+    cout << -consecutiveNumber * 2 << " ";
+    if (consecutiveNumber == 0)
     {
-        iScore -= iNumber * 2;
-        gotoxy(56, 18);
+        gotoxy(60, 18);
         SetConsoleTextAttribute(hConsole, 3);
+        cout << "0";
+        gotoxy(68, 18);
+        cout << "0";
+    }
+    // Letters Only:
+    if ((iUpperCase > 0 || iLowerCase > 0) && iNumber == 0 && iSymbol == 0)
+    {
+        iScore -= passwordLength;
+        gotoxy(60, 20);
+        SetConsoleTextAttribute(hConsole, 1);
         cout << passwordLength << "  ";
-        gotoxy(64, 18);
-        cout << -iNumber * 2 << " ";
+        sLetterOnly = "-" + to_string(passwordLength);
+        gotoxy(68, 20);
+        cout << sLetterOnly;
     }
     else
     {
-        iScore += iNumber * 2;
-        gotoxy(56, 18);
-        SetConsoleTextAttribute(hConsole, 3);
-        cout << "0";
-        gotoxy(64, 18);
+        gotoxy(60, 20);
+        SetConsoleTextAttribute(hConsole, 1);
         cout << "0  ";
-    }
-    // Symbols Only.
-    if (iSymbol == passwordLength)
-    {
-        iScore -= iSymbol * 2;
-        gotoxy(56, 20);
-        SetConsoleTextAttribute(hConsole, 5);
-        cout << passwordLength << "  ";
-        gotoxy(64, 20);
-        cout << -iSymbol * 2 << " ";
-    }
-    else
-    {
-        iScore += iSymbol * 2;
-        gotoxy(56, 20);
-        SetConsoleTextAttribute(hConsole, 5);
-        cout << "0";
-        gotoxy(64, 20);
+        gotoxy(68, 20);
         cout << "0  ";
     }
 
@@ -558,7 +561,7 @@ void passwordStrength(string password, char userInputChar)
     {
         iScore = 100;
     }
-    else if (iScore <= 0)
+    else if (iScore < 0)
     {
         iScore = 0;
     }
