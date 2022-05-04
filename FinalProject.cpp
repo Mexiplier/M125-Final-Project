@@ -88,7 +88,6 @@ void uiBoxes()
         cout << char(201);
         for (int b = 0; b < 36; b++)
             cout << char(205);
-
         for (int c = 1; c <= 1; c++)
             cout << char(187) << endl;
 
@@ -105,6 +104,7 @@ void uiBoxes()
         for (int g = 1; g <= 1; g++)
             cout << char(188);
     }
+    SetConsoleTextAttribute(hConsole, 7);
     // Password Score
     gotoxy(16, 6);
     for (int a = 0; a < 34; a++)
@@ -114,9 +114,10 @@ void uiBoxes()
 // UI Design Function.
 void uiDesign()
 {
-    SetConsoleTextAttribute(hConsole, 7);
+    SetConsoleTextAttribute(hConsole, 5);
     uiBoxes();
 
+    SetConsoleTextAttribute(hConsole, 7);
     // Password:
     gotoxy(6, 2);
     cout << "Password: ";
@@ -200,9 +201,9 @@ void uiDesign()
     cout << "Letters Only: " << endl;
 
     // Password Strength:
-    gotoxy(86, 1);
+    gotoxy(81, 1);
     SetConsoleTextAttribute(hConsole, 7);
-    cout << "PASSWORD STRENGTH" << endl;
+    cout << "PASSWORD REQUIREMENTS BONUS" << endl;
 
     gotoxy(78, 3);
     SetConsoleTextAttribute(hConsole, 4);
@@ -226,20 +227,24 @@ void uiDesign()
 
     gotoxy(81, 16);
     SetConsoleTextAttribute(hConsole, 7);
-    cout << " Press Enter To Continue.";
+    cout << " Press Enter To Continue";
 
-    SetConsoleTextAttribute(hConsole, 180);
+    SetConsoleTextAttribute(hConsole, 112);
     gotoxy(76, 21);
-    cout << "Date: 04/30/22                  ";
+    cout << "Date:  05/02/22                 ";
     gotoxy(76, 22);
-    cout << "Created By:                     ";
+    cout << "Class: M125                     ";
     gotoxy(76, 23);
-    cout << "Geo Hernandez                   ";
+    cout << "Group: 08                       ";
     gotoxy(76, 24);
-    cout << "Jacob Rodriguez                 ";
+    cout << "Created By:                     ";
     gotoxy(76, 25);
-    cout << "Adrian Carreno                  ";
+    cout << "Geo Hernandez                   ";
     gotoxy(76, 26);
+    cout << "Jacob Rodriguez                 ";
+    gotoxy(76, 27);
+    cout << "Adrian Carreno                  ";
+    gotoxy(76, 28);
     cout << "Jayveer Prajapati               ";
 }
 
@@ -311,14 +316,9 @@ int countSymbol(string password)
 void passwordStrength(string password, char userInputChar)
 {
     int iScore = 0;
-    int passReqBonus = 10;
-    int iUpperCase = 0;
-    int iLowerCase = 0;
-    int iNumber = 0;
-    int iSymbol = 0;
     int passwordLength = password.length();
-    int max_count = 0;
-    int count = 1;
+    int iUpperCase = 0, iLowerCase = 0, iNumber = 0, iSymbol = 0;
+    int max_count = 0, count = 1;
     char cOccurring;
     int consecutiveUpper = 0, consecutiveLower = 0, consecutiveNumber = 0;
     string sLetterOnly = "0", sUpperCase = "0", sLowerCase = "0";
@@ -326,6 +326,7 @@ void passwordStrength(string password, char userInputChar)
     // Scan Password.
     for (int i = 0; i < passwordLength; i++)
     {
+        // Scan For Characters.
         if (isUpperLetter(password[i]))
         {
             iUpperCase++;
@@ -342,6 +343,7 @@ void passwordStrength(string password, char userInputChar)
         {
             iSymbol++;
         }
+        // Scan For Consecutive Characters.
         if ((i + 1) < passwordLength)
         {
             if (isUpperLetter(password[i]) && isUpperLetter(password[i + 1]))
@@ -360,7 +362,7 @@ void passwordStrength(string password, char userInputChar)
     }
     // Scan Password For Occuring Characters.
     sort(password.begin(), password.end());
-    for (int i = 1; i <= passwordLength; i++)
+    for (int i = 0; i < passwordLength; i++)
     {
         if ((i == passwordLength) || (password[i] != password[i - 1]))
         {
@@ -377,22 +379,22 @@ void passwordStrength(string password, char userInputChar)
         }
     }
 
-    // Print Amount of Characters in Password.
+    // Print Amount Of Characters In Password.
     gotoxy(14, 12);
     SetConsoleTextAttribute(hConsole, 6);
-    cout << passwordLength << " ";
+    cout << passwordLength << "   ";
     gotoxy(14, 14);
     SetConsoleTextAttribute(hConsole, 1);
-    cout << iUpperCase << "  ";
+    cout << iUpperCase << "   ";
     gotoxy(14, 16);
     SetConsoleTextAttribute(hConsole, 2);
-    cout << iLowerCase << "  ";
+    cout << iLowerCase << "   ";
     gotoxy(14, 18);
     SetConsoleTextAttribute(hConsole, 3);
-    cout << iNumber << "  ";
+    cout << iNumber << "   ";
     gotoxy(14, 20);
     SetConsoleTextAttribute(hConsole, 5);
-    cout << iSymbol << "  ";
+    cout << iSymbol << "   ";
 
     // Adding Score
     if (passwordLength > 0)
@@ -412,7 +414,7 @@ void passwordStrength(string password, char userInputChar)
     {
         SetConsoleTextAttribute(hConsole, 1);
         iScore += ((passwordLength - iUpperCase) * 2);
-        sUpperCase = "+" + to_string((password.length() - iUpperCase) * 2);
+        sUpperCase = "+" + to_string((passwordLength - iUpperCase) * 2) + " ";
         gotoxy(22, 14);
         cout << sUpperCase;
     }
@@ -420,13 +422,13 @@ void passwordStrength(string password, char userInputChar)
     {
         SetConsoleTextAttribute(hConsole, 1);
         gotoxy(22, 14);
-        cout << "0  ";
+        cout << "0   ";
     }
     if (iLowerCase > 0)
     {
         SetConsoleTextAttribute(hConsole, 2);
         iScore += ((passwordLength - iLowerCase) * 2);
-        sLowerCase = "+" + to_string((password.length() - iLowerCase) * 2);
+        sLowerCase = "+" + to_string((passwordLength - iLowerCase) * 2) + " ";
         gotoxy(22, 16);
         cout << sLowerCase;
     }
@@ -434,7 +436,7 @@ void passwordStrength(string password, char userInputChar)
     {
         SetConsoleTextAttribute(hConsole, 2);
         gotoxy(22, 16);
-        cout << "0  ";
+        cout << "0   ";
     }
     if (iNumber > 0)
     {
@@ -447,7 +449,7 @@ void passwordStrength(string password, char userInputChar)
     {
         SetConsoleTextAttribute(hConsole, 3);
         gotoxy(22, 18);
-        cout << "0  ";
+        cout << "0   ";
     }
     if (iSymbol > 0)
     {
@@ -460,17 +462,24 @@ void passwordStrength(string password, char userInputChar)
     {
         SetConsoleTextAttribute(hConsole, 5);
         gotoxy(22, 20);
-        cout << "0  ";
+        cout << "0   ";
     }
     if (passwordLength > 7 && iUpperCase > 0 && iLowerCase > 0 && iNumber > 0 && iSymbol > 0)
     {
-        iScore += passReqBonus;
+        iScore += 10;
         gotoxy(85, 13);
         SetConsoleTextAttribute(hConsole, 192);
-        cout << "BONUS POINTS +20  ";
+        cout << "BONUS POINTS +10 ";
+        gotoxy(85, 14);
+        SetConsoleTextAttribute(hConsole, 192);
+        cout << "   GREAT JOB     ";
+    }
+    else if (passwordLength > 7 && (iUpperCase == 0 || iLowerCase == 0 || iNumber == 0 || iSymbol == 0))
+    {
+        iScore -= 10;
     }
 
-    // Deducting score.
+    // Deducting Score.
     // Maximum Occurring Character:
     if (max_count > 0)
     {
@@ -484,7 +493,6 @@ void passwordStrength(string password, char userInputChar)
     }
     else if (max_count == 0)
     {
-        iScore += max_count * 2;
         SetConsoleTextAttribute(hConsole, 6);
         gotoxy(60, 12);
         cout << "0      ";
@@ -502,9 +510,9 @@ void passwordStrength(string password, char userInputChar)
     {
         gotoxy(60, 14);
         SetConsoleTextAttribute(hConsole, 1);
-        cout << "0";
+        cout << "0   ";
         gotoxy(68, 14);
-        cout << "0";
+        cout << "0   ";
     }
     // Consecutive Lower Letters:
     iScore -= consecutiveLower * 2;
@@ -517,9 +525,9 @@ void passwordStrength(string password, char userInputChar)
     {
         gotoxy(60, 16);
         SetConsoleTextAttribute(hConsole, 2);
-        cout << "0";
+        cout << "0   ";
         gotoxy(68, 16);
-        cout << "0";
+        cout << "0   ";
     }
     // Consecutive Numbers:
     iScore -= consecutiveNumber * 2;
@@ -532,36 +540,32 @@ void passwordStrength(string password, char userInputChar)
     {
         gotoxy(60, 18);
         SetConsoleTextAttribute(hConsole, 3);
-        cout << "0";
+        cout << "0   ";
         gotoxy(68, 18);
-        cout << "0";
+        cout << "0   ";
     }
     // Letters Only:
     if ((iUpperCase > 0 || iLowerCase > 0) && iNumber == 0 && iSymbol == 0)
     {
         iScore -= passwordLength;
         gotoxy(60, 20);
-        SetConsoleTextAttribute(hConsole, 1);
+        SetConsoleTextAttribute(hConsole, 5);
         cout << passwordLength << "  ";
         sLetterOnly = "-" + to_string(passwordLength);
         gotoxy(68, 20);
-        cout << sLetterOnly;
+        cout << sLetterOnly << " ";
     }
     else
     {
         gotoxy(60, 20);
-        SetConsoleTextAttribute(hConsole, 1);
+        SetConsoleTextAttribute(hConsole, 5);
         cout << "0  ";
         gotoxy(68, 20);
         cout << "0  ";
     }
 
     // Determine Complexity.
-    if (iScore > 100)
-    {
-        iScore = 100;
-    }
-    else if (iScore < 0)
+    if (iScore < 0)
     {
         iScore = 0;
     }
@@ -621,7 +625,7 @@ void passwordStrength(string password, char userInputChar)
         for (int i = 0; i < 7; i++)
             cout << char(176);
     }
-    if (iScore >= 80 && passwordLength > 7 && iUpperCase > 0 && iLowerCase > 0 && iNumber > 0 && iSymbol > 0)
+    if (iScore >= 80)
     {
         SetConsoleTextAttribute(hConsole, 1);
         gotoxy(51, 6);
@@ -631,9 +635,6 @@ void passwordStrength(string password, char userInputChar)
         gotoxy(16, 6);
         for (int i = 1; i <= 34; i++)
             cout << char(219);
-        gotoxy(85, 14);
-        SetConsoleTextAttribute(hConsole, 192);
-        cout << "   Great Job.     ";
     }
     else
     {
@@ -641,6 +642,12 @@ void passwordStrength(string password, char userInputChar)
         cout << "                   ";
         gotoxy(85, 14);
         cout << "                   ";
+    }
+    if (iScore > 100)
+    {
+        SetConsoleTextAttribute(hConsole, 5);
+        gotoxy(51, 6);
+        cout << "+" << iScore << "  ";
     }
     if (iScore == 0)
     {
@@ -763,7 +770,7 @@ int main()
 {
     char tryAgain = 'N';
     ShowConsoleCursor(false);
-    // Loop to ask user if they want to quit.
+    // Loop To Ask User If They Want To Quit.
     do
     {
         system("cls");
